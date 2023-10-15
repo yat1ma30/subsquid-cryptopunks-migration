@@ -182,7 +182,7 @@ export class ParallelRpcCaller {
         // Process tasks using a specific client
         const processWithClient = async (client: Client) => {
             let suspensionTimeMs = this.suspensionTimeMs
-            let interval = 200
+            let interval = 500
             while (queue.length > 0) {
                 await new Promise((res) => setTimeout(res, interval))
                 if (client.isSuspended()) {

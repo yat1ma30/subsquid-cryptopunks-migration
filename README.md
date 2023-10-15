@@ -127,6 +127,8 @@ query MyQuery {
 
 ### Punks
 
+The Subgraph doesn't record `contract` at all.
+
 Squid
 
 ```graphql

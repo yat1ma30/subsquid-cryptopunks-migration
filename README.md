@@ -6,6 +6,8 @@ This is a squid submitted by @yat1ma30 for the [CryptoPunks Subgraph migration](
 
 ### Playground
 
+https://app.subsquid.io/squids/yat1ma30-cryptopunks/v1
+
 ### Run locally
 
 ```bash
@@ -78,6 +80,10 @@ query MyQuery {
 ```
 
 ### Accounts
+
+The Subgraph has some  bug.
+
+e.g. wrong `numberOfPunksOwned` https://cryptopunks.app/cryptopunks/accountinfo?account=0x78f0269f5b1ca914c8c58993f41181f89e212b27
 
 Squid
 

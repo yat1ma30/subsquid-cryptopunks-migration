@@ -6,7 +6,7 @@ This is a squid submitted by @yat1ma30 for the [CryptoPunks Subgraph migration](
 
 ### Playground
 
-https://app.subsquid.io/squids/yat1ma30-cryptopunks/v1
+https://squid.subsquid.io/yat1ma30-cryptopunks/v/v1/graphql
 
 ### Run locally
 

@@ -9,7 +9,7 @@ type GlobalId = string
  * CTokens are created and cached in Transfer event
  *
  * Pattern 1. Transfer (logIndex: n) -> PunkBought (logIndex: n+1)
- * Pattern 2. Transfer (logIndex: n) -> PunkNoLongerForSale (logIndex: n+2) -> PunkBought (logIndex: n+3)
+ * Pattern 2. Transfer (logIndex: n) -> PunkNoLongerForSale (logIndex: n+1) -> PunkBought (logIndex: n+2)
  *
  */
 export class TransferRecorder {

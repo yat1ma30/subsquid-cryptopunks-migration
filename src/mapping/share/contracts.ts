@@ -10,7 +10,7 @@ import {
 import * as abiCryptoPunks from '../../abi/cryptopunks'
 import * as abiWrappedPunks from '../../abi/wrappedpunks'
 import * as abiCryptoPunksData from '../../abi/CryptoPunksData'
-import {callOnce, instantiate} from '../../utils'
+import {callOnce, chunkArray, instantiate} from '../../utils'
 import {ParallelRpcCaller} from '../../parallelRpcCaller'
 import {IsNull} from 'typeorm'
 
@@ -45,9 +45,10 @@ const fetchAndSavePunkImages = async (ctx: CtxWithCache, log: Log) => {
     entitiesToFetchImages.forEach((e, i) => {
         e.image = images[i]
     })
-    await ctx.store.upsert(entitiesToFetchImages)
+    for (const chunk of chunkArray(entitiesToFetchImages, 100)) {
+        await ctx.store.upsert(chunk)
+    }
     ctx.log.info(`Saved ${images.length} images.`)
-
     ctx.log.info(`[CryptoPunksData] Fetching ${idsToFetchSvgs.length} svgs.`)
     const svgs = await caller.batchCall(
         ctx.log,
@@ -62,7 +63,9 @@ const fetchAndSavePunkImages = async (ctx: CtxWithCache, log: Log) => {
     entitiesToFetchSvgs.forEach((e, i) => {
         e.svg = svgs[i]
     })
-    await ctx.store.upsert(entitiesToFetchSvgs)
+    for (const chunk of chunkArray(entitiesToFetchSvgs, 100)) {
+        await ctx.store.upsert(chunk)
+    }
     ctx.log.info(`Saved ${svgs.length} svgs.`)
 }
 

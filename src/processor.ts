@@ -8,14 +8,7 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 import {Store} from '@subsquid/typeorm-store'
-import {
-    Mapper,
-    cryptopunks,
-    erc721sale,
-    opensea,
-    raribleExchangeV1,
-    wrappedPunks,
-} from './mapping'
+import * as mapping from './mapping'
 import {patchStore} from './patch'
 import {EntitySyncManager, SimpleQueue, TransferRecorder} from './context'
 export const BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES = 18_340_000
@@ -40,12 +33,12 @@ export const processor = new EvmBatchProcessor()
         from: 3914494,
     })
 
-export const mapper = new Mapper()
-    .add(cryptopunks)
-    .add(wrappedPunks)
-    .add(raribleExchangeV1)
-    .add(erc721sale)
-    .add(opensea)
+export const mapper = new mapping.Mapper()
+    .add(mapping.cryptopunks)
+    .add(mapping.wrappedPunks)
+    .add(mapping.raribleExchangeV1)
+    .add(mapping.erc721sale)
+    .add(mapping.opensea)
 
 mapper.getLogRequests().forEach((req) => {
     processor.addLog(req)

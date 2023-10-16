@@ -5,15 +5,7 @@ import {
     WRAPPED_PUNK_ADDRESS,
     ZERO_ADDRESS,
 } from './share/constants'
-import {
-    Account,
-    Trait,
-    Contract,
-    TraitType,
-    UserProxy,
-    Punk,
-    CToken,
-} from '../model'
+import {Account, Trait, Contract, TraitType, UserProxy, Punk} from '../model'
 import {
     closeOldAsk,
     closeOldBid,

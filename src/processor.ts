@@ -63,6 +63,5 @@ export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>
 export type CtxWithCache = ProcessorContext<Store> & {
     queue: SimpleQueue
     esm: EntitySyncManager
-    blockData: BlockData
     transferRecorder: TransferRecorder
 }

@@ -29,10 +29,8 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     const queue = new SimpleQueue()
     const esm = new EntitySyncManager()
     const transferRecorder = new TransferRecorder()
-    let lastBlock: Block | undefined = undefined
     for (const block of ctx.blocks) {
         for (const log of block.logs) {
-            lastBlock = log.block
             const ctxWithCache = {
                 ...ctx,
                 queue,
@@ -47,7 +45,6 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
             await mapper.processLog(ctxWithCache, log)
         }
     }
-    if (!lastBlock) return
 
     // processing queue
     ctx.log.debug('Processing queue...')

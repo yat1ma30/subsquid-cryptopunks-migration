@@ -49,6 +49,7 @@ mapping.handlers.handleTransfer = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchWrappedPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.save(contract)

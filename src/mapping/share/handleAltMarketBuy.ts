@@ -60,7 +60,11 @@ export function handleAltMarketBuy(
         }
         let contract = contractDeferred.get()
         if (!contract) {
-            contract = await fetchWrappedPunkContract(ctx, WRAPPED_PUNK_ADDRESS)
+            contract = await fetchWrappedPunkContract(
+                ctx,
+                log.block,
+                WRAPPED_PUNK_ADDRESS,
+            )
         }
 
         let _fromAccount = fromAccountDeferred.get()

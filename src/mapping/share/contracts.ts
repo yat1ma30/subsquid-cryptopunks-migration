@@ -73,14 +73,11 @@ export const fetchAndSavePunkImagesOnce = callOnce(fetchAndSavePunkImages)
 
 export async function fetchCryptoPunkContract(
     ctx: CtxWithCache,
+    block: Block,
     address: string,
 ) {
     ctx.log.warn(`Contract state calls: fetchCryptoPunkContract: ${address}`)
-    const client = new abiCryptoPunks.Contract(
-        ctx,
-        ctx.blockData.header,
-        address,
-    )
+    const client = new abiCryptoPunks.Contract(ctx, block, address)
     const symbol = await client.symbol()
     const name = await client.name()
     const imageHash = await client.imageHash()
@@ -99,14 +96,11 @@ export async function fetchCryptoPunkContract(
 
 export async function fetchWrappedPunkContract(
     ctx: CtxWithCache,
+    block: Block,
     address: string,
 ) {
     ctx.log.warn(`Contract state calls: fetchWrappedPunkContract: ${address}`)
-    const client = new abiWrappedPunks.Contract(
-        ctx,
-        ctx.blockData.header,
-        address,
-    )
+    const client = new abiWrappedPunks.Contract(ctx, block, address)
     const symbol = await client.symbol()
     const name = await client.name()
     const totalSupply = await client.totalSupply()

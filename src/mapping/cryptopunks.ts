@@ -97,6 +97,7 @@ mapping.handlers.handleAssign = async (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)
@@ -177,6 +178,7 @@ mapping.handlers.handlePunkTransfer = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)
@@ -530,6 +532,7 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)

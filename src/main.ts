@@ -1,12 +1,5 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {
-    Block,
-    processor,
-    mapper,
-    BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES,
-} from './processor'
-import {EntitySyncManager} from './context/entitySyncManager'
-import {SimpleQueue} from './context/simpleQueue'
+import {processor, mapper, BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES} from './processor'
 import {
     Account,
     Ask,
@@ -19,9 +12,8 @@ import {
     Trait,
     UserProxy,
 } from './model'
-
 import {fetchAndSavePunkImagesOnce} from './mapping/share/contracts'
-import {TransferRecorder} from './context/transferRecorder'
+import {TransferRecorder, EntitySyncManager, SimpleQueue} from './context'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     // making queue

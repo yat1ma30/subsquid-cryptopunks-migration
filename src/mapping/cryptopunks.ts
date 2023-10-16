@@ -42,7 +42,7 @@ import {
     updateSale,
 } from './share/entitites'
 import {getTrait} from './share/traits'
-import {Deferred} from '../context/entitySyncManager'
+import {Deferred} from '../context'
 import {Transfer} from '../model/generated/transfer.model'
 import {defaultPunkRelations} from './share/relations'
 import {createMapping} from './share/mapper'

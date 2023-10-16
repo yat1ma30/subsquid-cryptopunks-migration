@@ -1,5 +1,5 @@
-import {getGlobalId, getGlobalIdWithOffset} from './mapping/share/entitites'
-import {Log} from './processor'
+import {getGlobalId, getGlobalIdWithOffset} from '../mapping/share/entitites'
+import {Log} from '../processor'
 
 type GlobalId = string
 

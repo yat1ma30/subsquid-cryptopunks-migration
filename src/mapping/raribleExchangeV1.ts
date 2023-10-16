@@ -1,5 +1,5 @@
 import * as abi from '../abi/RaribleExchangeV1'
-import {createMapping} from '../mapper'
+import {createMapping} from './share/mapper'
 import {handleAltMarketBuy} from './share/handleAltMarketBuy'
 
 const mapping = createMapping(abi, '0xcd4ec7b66fbc029c116ba9ffb3e59351c20b5b06')

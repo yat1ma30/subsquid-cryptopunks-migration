@@ -1,7 +1,7 @@
 import {Entity, Store} from '@subsquid/typeorm-store'
 import {FindOptionsRelations, In} from 'typeorm'
-import {ProcessorContext} from './processor'
-import {NullableObjectProps, mergeRelations} from './utils'
+import {ProcessorContext} from '../processor'
+import {NullableObjectProps, mergeRelations} from '../utils'
 
 export interface EntityClass<T extends Entity> {
     new (...args: any[]): T

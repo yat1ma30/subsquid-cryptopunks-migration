@@ -5,8 +5,8 @@ import {
     mapper,
     BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES,
 } from './processor'
-import {EntitySyncManager} from './entitySyncManager'
-import {SimpleQueue} from './simpleQueue'
+import {EntitySyncManager} from './context/entitySyncManager'
+import {SimpleQueue} from './context/simpleQueue'
 import {
     Account,
     Ask,
@@ -21,8 +21,7 @@ import {
 } from './model'
 
 import {fetchAndSavePunkImagesOnce} from './mapping/share/contracts'
-import {TransferRecorder} from './transferRecorder'
-import {MULTICALL_ADDRESS} from './mapping/share/constants'
+import {TransferRecorder} from './context/transferRecorder'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     ctx.log.debug('Making queue...')

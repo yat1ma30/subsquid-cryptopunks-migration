@@ -9,16 +9,16 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 import {Store} from '@subsquid/typeorm-store'
-import {SimpleQueue} from './simpleQueue'
-import {EntitySyncManager} from './entitySyncManager'
-import {TransferRecorder} from './transferRecorder'
-import {Mapper} from './mapper'
+import {SimpleQueue} from './context/simpleQueue'
+import {EntitySyncManager} from './context/entitySyncManager'
+import {TransferRecorder} from './context/transferRecorder'
+import {Mapper} from './mapping/share/mapper'
 import cryptopunks from './mapping/cryptopunks'
 import raribleExchangeV1 from './mapping/raribleExchangeV1'
 import wrappedPunks from './mapping/wrappedPunks'
 import erc721sale from './mapping/erc721sale'
 import opensea from './mapping/opensea'
-import {patchStore} from './patch'
+import {patchStore} from './store'
 export const BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES = 18_340_000
 
 // monkey patch

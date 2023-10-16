@@ -1,5 +1,5 @@
 import * as abi from '../abi/Opensea'
-import {createMapping} from '../mapper'
+import {createMapping} from './share/mapper'
 import {handleAltMarketBuy} from './share/handleAltMarketBuy'
 
 const mapping = createMapping(abi, '0x7be8076f4ea4a4ad08075c2508e481d6c946d12b')

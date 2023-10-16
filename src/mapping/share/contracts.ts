@@ -11,7 +11,7 @@ import * as abiCryptoPunks from '../../abi/cryptopunks'
 import * as abiWrappedPunks from '../../abi/wrappedpunks'
 import * as abiCryptoPunksData from '../../abi/CryptoPunksData'
 import {callOnce, chunkArray, instantiate} from '../../utils'
-import {ParallelRpcCaller} from '../../parallelRpcCaller'
+import {ParallelRpcCaller} from './parallelRpcCaller'
 import {IsNull} from 'typeorm'
 
 const fetchAndSavePunkImages = async (ctx: CtxWithCache, log: Log) => {

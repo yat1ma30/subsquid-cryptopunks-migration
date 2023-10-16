@@ -42,10 +42,10 @@ import {
     updateSale,
 } from './share/entitites'
 import {getTrait} from './share/traits'
-import {Deferred} from '../entitySyncManager'
+import {Deferred} from '../context/entitySyncManager'
 import {Transfer} from '../model/generated/transfer.model'
 import {defaultPunkRelations} from './share/relations'
-import {createMapping} from '../mapper'
+import {createMapping} from './share/mapper'
 import {fetchCryptoPunkContract} from './share/contracts'
 
 const mapping = createMapping(abi, '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB')

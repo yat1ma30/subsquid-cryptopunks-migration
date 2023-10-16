@@ -1,8 +1,8 @@
 import {RpcClient} from '@subsquid/rpc-client'
 import {Logger} from '@subsquid/logger'
-import {Multicall} from './abi/multicall'
-import {Block, Func} from './abi/abi.support'
-import {chunkArray} from './utils'
+import {Multicall} from '../../abi/multicall'
+import {Block, Func} from '../../abi/abi.support'
+import {chunkArray} from '../../utils'
 
 const PUBLIC_ENDPOINTS: string[] = [
     ...new Set([

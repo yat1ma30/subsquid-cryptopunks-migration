@@ -8,13 +8,15 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 import {Store} from '@subsquid/typeorm-store'
-import {Mapper} from './mapping'
-import cryptopunks from './mapping/cryptopunks'
-import raribleExchangeV1 from './mapping/raribleExchangeV1'
-import wrappedPunks from './mapping/wrappedPunks'
-import erc721sale from './mapping/erc721sale'
-import opensea from './mapping/opensea'
-import {patchStore} from './patch/store'
+import {
+    Mapper,
+    cryptopunks,
+    erc721sale,
+    opensea,
+    raribleExchangeV1,
+    wrappedPunks,
+} from './mapping'
+import {patchStore} from './patch'
 import {EntitySyncManager, SimpleQueue, TransferRecorder} from './context'
 export const BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES = 18_340_000
 

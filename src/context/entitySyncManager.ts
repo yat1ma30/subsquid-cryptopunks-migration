@@ -1,7 +1,7 @@
 import {Entity, Store} from '@subsquid/typeorm-store'
 import {FindOptionsRelations, In} from 'typeorm'
 import {ProcessorContext} from '../processor'
-import {NullableObjectProps, mergeRelations} from '../utils'
+import {NullableObjectProps, chunkArray, mergeRelations} from '../utils'
 
 export interface EntityClass<T extends Entity> {
     new (...args: any[]): T
@@ -93,12 +93,6 @@ export class EntityClassMap<A, B> {
 
     clearAll() {
         this.map.clear()
-    }
-}
-function* chunkArray<T>(array: T[], size: number): Generator<T[]> {
-    for (let i = 0; i < array.length; i += size) {
-        const a = array.slice(i, i + size)
-        yield a
     }
 }
 export type Deferred<E extends Entity> = {

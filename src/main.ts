@@ -24,6 +24,7 @@ import {fetchAndSavePunkImagesOnce} from './mapping/share/contracts'
 import {TransferRecorder} from './context/transferRecorder'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
+    // making queue
     ctx.log.debug('Making queue...')
     const queue = new SimpleQueue()
     const esm = new EntitySyncManager()
@@ -46,11 +47,15 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
             await mapper.processLog(ctxWithCache, log)
         }
     }
-
-    ctx.log.debug('Processing queue...')
     if (!lastBlock) return
+
+    // processing queue
+    ctx.log.debug('Processing queue...')
+    // load entities from DB first
     await esm.load(ctx)
+    // execute all queue tasks
     await queue.executeAll()
+    // save entities to DB
     await esm.flush(ctx, [
         Trait,
         Contract,

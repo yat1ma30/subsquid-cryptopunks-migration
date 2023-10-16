@@ -27,8 +27,6 @@ export const processor = new EvmBatchProcessor()
     .setDataSource({
         archive: lookupArchive('eth-mainnet'),
         chain: 'https://rpc.ankr.com/eth',
-        // chain: 'https://cloudflare-eth.com',
-        // chain: 'https://rpc.flashbots.net/',
     })
     .setFinalityConfirmation(75)
     .setFields({
@@ -39,7 +37,6 @@ export const processor = new EvmBatchProcessor()
         },
     })
     .setBlockRange({
-        // from: 13047091,
         from: 3914494,
     })
 

@@ -1,7 +1,7 @@
 import * as abi from '../abi/wrappedpunks'
 import {BIGINT_ONE, ZERO_ADDRESS} from './share/constants'
-import {Account, CToken, Contract, Punk, Transfer, UserProxy} from '../model'
-import type {Mapping} from '../mapper'
+import {Account, Contract, Punk, Transfer, UserProxy} from '../model'
+import type {Mapping} from './share/mapper'
 import {hexToByteArray, instantiate} from '../utils'
 import {
     createTransfer,
@@ -49,6 +49,7 @@ mapping.handlers.handleTransfer = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchWrappedPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.save(contract)

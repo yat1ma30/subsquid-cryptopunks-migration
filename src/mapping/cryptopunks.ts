@@ -5,15 +5,7 @@ import {
     WRAPPED_PUNK_ADDRESS,
     ZERO_ADDRESS,
 } from './share/constants'
-import {
-    Account,
-    Trait,
-    Contract,
-    TraitType,
-    UserProxy,
-    Punk,
-    CToken,
-} from '../model'
+import {Account, Trait, Contract, TraitType, UserProxy, Punk} from '../model'
 import {
     closeOldAsk,
     closeOldBid,
@@ -42,10 +34,10 @@ import {
     updateSale,
 } from './share/entitites'
 import {getTrait} from './share/traits'
-import {Deferred} from '../entitySyncManager'
+import {Deferred} from '../context'
 import {Transfer} from '../model/generated/transfer.model'
 import {defaultPunkRelations} from './share/relations'
-import {createMapping} from '../mapper'
+import {createMapping} from './share/mapper'
 import {fetchCryptoPunkContract} from './share/contracts'
 
 const mapping = createMapping(abi, '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB')
@@ -97,6 +89,7 @@ mapping.handlers.handleAssign = async (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)
@@ -177,6 +170,7 @@ mapping.handlers.handlePunkTransfer = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)
@@ -359,17 +353,6 @@ mapping.handlers.handlePunkOffered = (ctx, log, event) => {
         ctx.esm.save(askCreated)
         ctx.esm.save(ask)
         ctx.esm.save(punk)
-
-        // TODO: is this really needed?
-        // Remove before deploying to The Graph Network
-        // if (log.block.height > 15205322) {
-        //     handleAskNotification(
-        //         punk.id,
-        //         punk.owner.toHexString(),
-        //         convertPriceToBigDecimal(event.params.minValue).toString(),
-        //         event,
-        //     )
-        // }
     })
 }
 
@@ -425,17 +408,6 @@ mapping.handlers.handlePunkBidEntered = (ctx, log, event) => {
         ctx.esm.save(bidCreated)
         ctx.esm.save(bid)
         ctx.esm.save(punk)
-
-        // TODO: is this really needed?
-        //Remove before deploying to The Graph Network
-        // if (event.block.number.gt(BigInt.fromI32(15205322))) {
-        //     handleBidNotification(
-        //         punk.id,
-        //         account.id.toHexString(),
-        //         convertPriceToBigDecimal(event.params.value).toString(),
-        //         event,
-        //     )
-        // }
     })
 }
 mapping.handlers.handlePunkBidWithdrawn = (ctx, log, event) => {
@@ -530,6 +502,7 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
         if (!contract) {
             contract = await fetchCryptoPunkContract(
                 ctx,
+                log.block,
                 log.address.toLowerCase(),
             )
             ctx.esm.saveForId(contract)
@@ -573,16 +546,6 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
                 updateAccountAggregates(fromAccount, toAccount, oldBid.amount)
                 updatePunkSaleAggregates(punk, oldBid.amount)
                 updateContractAggregates(contract, oldBid.amount)
-
-                // TODO: is this really needed?
-                // if (event.block.number.gt(BigInt.fromI32(15205322))) {
-                //     handleSaleNotification(
-                //         punk.id,
-                //         toAccount.id.toHexString(),
-                //         convertPriceToBigDecimal(oldBid.amount).toString(),
-                //         event,
-                //     )
-                // }
             } else {
                 ctx.log.debug('no current bid')
             }
@@ -599,17 +562,6 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
             updateContractAggregates(contract, event.value)
             updateAccountHoldings(toAccount, fromAccount)
             updateAccountAggregates(fromAccount, toAccount, event.value)
-
-            // TODO: is this really needed?
-            //Remove before deploying to The Graph Network
-            // if (event.block.number.gt(BigInt.fromI32(15205322))) {
-            //     handleSaleNotification(
-            //         punk.id,
-            //         buyer.toHexString(),
-            //         convertPriceToBigDecimal(price).toString(),
-            //         event,
-            //     )
-            // }
         }
 
         //Write

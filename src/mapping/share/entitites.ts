@@ -22,7 +22,7 @@ import {
     Wrap,
 } from '../../model'
 import {CtxWithCache, Log} from '../../processor'
-import {hexToByteArray, instantiate, uint8ToHex} from '../../utils'
+import {hexToByteArray, instantiate} from '../../utils'
 
 export function instantiateAccount(address: string): Account {
     const url = `https://cryptopunks.app/cryptopunks/accountinfo?account=${address}`

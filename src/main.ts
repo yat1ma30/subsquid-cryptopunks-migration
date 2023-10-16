@@ -1,12 +1,5 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {
-    Block,
-    processor,
-    mapper,
-    BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES,
-} from './processor'
-import {EntitySyncManager} from './entitySyncManager'
-import {SimpleQueue} from './simpleQueue'
+import {processor, mapper, BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES} from './processor'
 import {
     Account,
     Ask,
@@ -19,20 +12,17 @@ import {
     Trait,
     UserProxy,
 } from './model'
-
 import {fetchAndSavePunkImagesOnce} from './mapping/share/contracts'
-import {TransferRecorder} from './transferRecorder'
-import {MULTICALL_ADDRESS} from './mapping/share/constants'
+import {TransferRecorder, EntitySyncManager, SimpleQueue} from './context'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
+    // making queue
     ctx.log.debug('Making queue...')
     const queue = new SimpleQueue()
     const esm = new EntitySyncManager()
     const transferRecorder = new TransferRecorder()
-    let lastBlock: Block | undefined = undefined
     for (const block of ctx.blocks) {
         for (const log of block.logs) {
-            lastBlock = log.block
             const ctxWithCache = {
                 ...ctx,
                 queue,
@@ -48,10 +38,13 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
         }
     }
 
+    // processing queue
     ctx.log.debug('Processing queue...')
-    if (!lastBlock) return
+    // load entities from DB first
     await esm.load(ctx)
+    // execute all queue tasks
     await queue.executeAll()
+    // save entities to DB
     await esm.flush(ctx, [
         Trait,
         Contract,

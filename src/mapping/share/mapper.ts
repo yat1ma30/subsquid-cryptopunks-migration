@@ -1,7 +1,7 @@
-import {CtxWithCache, Log} from './processor'
+import {CtxWithCache, Log} from '../../processor'
 import {LogRequest} from '@subsquid/evm-processor/lib/interfaces/data-request'
 import assert from 'assert'
-import {LogEvent} from './abi/abi.support'
+import {LogEvent} from '../../abi/abi.support'
 
 type ABIEvent = LogEvent<any>
 

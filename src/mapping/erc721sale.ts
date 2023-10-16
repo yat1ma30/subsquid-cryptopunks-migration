@@ -1,5 +1,5 @@
 import * as abi from '../abi/ERC721Sale'
-import {createMapping} from '../mapper'
+import {createMapping} from './share/mapper'
 import {handleAltMarketBuy} from './share/handleAltMarketBuy'
 
 const mapping = createMapping(abi, '0x131aebbfe55bca0c9eaad4ea24d386c5c082dd58')

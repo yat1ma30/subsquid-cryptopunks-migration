@@ -1,6 +1,5 @@
 import {lookupArchive} from '@subsquid/archive-registry'
 import {
-    BlockData,
     BlockHeader,
     DataHandlerContext,
     EvmBatchProcessor,
@@ -9,16 +8,16 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 import {Store} from '@subsquid/typeorm-store'
-import {SimpleQueue} from './simpleQueue'
-import {EntitySyncManager} from './entitySyncManager'
-import {TransferRecorder} from './transferRecorder'
-import {Mapper} from './mapper'
-import cryptopunks from './mapping/cryptopunks'
-import raribleExchangeV1 from './mapping/raribleExchangeV1'
-import wrappedPunks from './mapping/wrappedPunks'
-import erc721sale from './mapping/erc721sale'
-import opensea from './mapping/opensea'
+import {
+    Mapper,
+    cryptopunks,
+    erc721sale,
+    opensea,
+    raribleExchangeV1,
+    wrappedPunks,
+} from './mapping'
 import {patchStore} from './patch'
+import {EntitySyncManager, SimpleQueue, TransferRecorder} from './context'
 export const BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES = 18_340_000
 
 // monkey patch
@@ -28,8 +27,6 @@ export const processor = new EvmBatchProcessor()
     .setDataSource({
         archive: lookupArchive('eth-mainnet'),
         chain: 'https://rpc.ankr.com/eth',
-        // chain: 'https://cloudflare-eth.com',
-        // chain: 'https://rpc.flashbots.net/',
     })
     .setFinalityConfirmation(75)
     .setFields({
@@ -40,7 +37,6 @@ export const processor = new EvmBatchProcessor()
         },
     })
     .setBlockRange({
-        // from: 13047091,
         from: 3914494,
     })
 
@@ -63,6 +59,5 @@ export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>
 export type CtxWithCache = ProcessorContext<Store> & {
     queue: SimpleQueue
     esm: EntitySyncManager
-    blockData: BlockData
     transferRecorder: TransferRecorder
 }

@@ -18,7 +18,7 @@ import raribleExchangeV1 from './mapping/raribleExchangeV1'
 import wrappedPunks from './mapping/wrappedPunks'
 import erc721sale from './mapping/erc721sale'
 import opensea from './mapping/opensea'
-import {patchStore} from './store'
+import {patchStore} from './patch/store'
 export const BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES = 18_340_000
 
 // monkey patch

@@ -42,6 +42,8 @@ import {fetchCryptoPunkContract} from './share/contracts'
 
 const mapping = createMapping(abi, '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB')
 
+mapping.startBlock = 3914494
+
 mapping.filters = {
     handlePunkBought: (ctx, log) => {
         const r = ctx.transferRecorder.hasAssociatedCToken(log)

@@ -1,7 +1,7 @@
 import * as abi from '../abi/wrappedpunks'
 import {BIGINT_ONE, ZERO_ADDRESS} from './share/constants'
 import {Account, Contract, Punk, Transfer, UserProxy} from '../model'
-import type {Mapping} from './share/mapper'
+import {createMapping} from './share/mapper'
 import {hexToByteArray, instantiate} from '../utils'
 import {
     createTransfer,
@@ -15,12 +15,9 @@ import {
 import {defaultPunkRelations} from './share/relations'
 import {fetchWrappedPunkContract} from './share/contracts'
 
-const mapping: Mapping<typeof abi> = {
-    address: '0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6',
-    abi,
-    startBlock: 10821736,
-    handlers: {},
-}
+const mapping = createMapping(abi, '0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6')
+
+mapping.startBlock = 10821736
 
 mapping.handlers.handleTransfer = (ctx, log, event) => {
     ctx.transferRecorder.recordTransfer(log)

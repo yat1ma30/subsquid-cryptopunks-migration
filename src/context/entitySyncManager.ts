@@ -224,7 +224,6 @@ export class EntitySyncManager {
         fieldsToExclude: NullableObjectProps<E>[] = [],
         storeInCache = false, // false by default
     ) {
-        // console.log(entity, entity.constructor)
         const entityClass = entity.constructor as EntityClass<E>
         const cloned = new entityClass({...entity})
         if (storeInCache) {

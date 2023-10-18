@@ -11,3 +11,8 @@ export const BIGINT_ONE = BigInt(1)
 export const MULTICALL_ADDRESS = '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
 export const CRYPTOPUNKS_DATA_ADDRESS =
     '0x16f5a35647d6f03d5d3da7b35409d65ba03af3b2'
+
+// for notifications...
+export const SUBGRAPH_ID = 'itsjerryokolo/cryptopunks'
+export const SUBGRAPH_ADDRESS = '0xbCb4ED1F05b8F017CF23E739552A6D81A014Ee84'
+export const MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION = 15205322

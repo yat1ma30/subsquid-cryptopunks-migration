@@ -2,11 +2,7 @@ import * as cryptoPunksDataAbi from '../../abi/CryptoPunksData'
 import {ChainContext} from '../../abi/abi.support'
 import {Contract as ContractModel, MetaData} from '../../model'
 import {Block, CtxWithCache, Log} from '../../processor'
-import {
-    BIGINT_ZERO,
-    CRYPTOPUNKS_DATA_ADDRESS,
-    MULTICALL_ADDRESS,
-} from './constants'
+import {CRYPTOPUNKS_DATA_ADDRESS, MULTICALL_ADDRESS} from './constants'
 import * as abiCryptoPunks from '../../abi/cryptopunks'
 import * as abiWrappedPunks from '../../abi/wrappedpunks'
 import * as abiCryptoPunksData from '../../abi/CryptoPunksData'
@@ -84,8 +80,8 @@ export async function fetchCryptoPunkContract(
     const totalSupply = await client.totalSupply()
     const contract = instantiate(ContractModel, {
         id: address.toLowerCase(),
-        totalAmountTraded: BIGINT_ZERO,
-        totalSales: BIGINT_ZERO,
+        totalAmountTraded: 0n,
+        totalSales: 0n,
         symbol,
         name,
         imageHash,
@@ -106,8 +102,8 @@ export async function fetchWrappedPunkContract(
     const totalSupply = await client.totalSupply()
     const contract = instantiate(ContractModel, {
         id: address.toLowerCase(),
-        totalAmountTraded: BIGINT_ZERO,
-        totalSales: BIGINT_ZERO,
+        totalAmountTraded: 0n,
+        totalSales: 0n,
         symbol,
         name,
         totalSupply,

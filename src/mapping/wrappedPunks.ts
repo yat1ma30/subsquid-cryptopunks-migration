@@ -1,5 +1,5 @@
 import * as abi from '../abi/wrappedpunks'
-import {BIGINT_ONE, ZERO_ADDRESS} from './share/constants'
+import {ZERO_ADDRESS} from './share/constants'
 import {Account, Contract, Punk, Transfer, UserProxy} from '../model'
 import {createMapping} from './share/mapper'
 import {hexToByteArray, instantiate} from '../utils'
@@ -73,14 +73,14 @@ mapping.handlers.handleTransfer = (ctx, log, event) => {
         if (fromId === ZERO_ADDRESS) {
             // A wrapped punk is minted (wrapped)
             const wrap = createWrap(fromAccount, punk, log)
-            contract.totalSupply += BIGINT_ONE
+            contract.totalSupply++
             wrap.to = toAccount
             ctx.esm.save(wrap)
             ctx.esm.save(contract)
         } else if (toId === ZERO_ADDRESS) {
             // A wrapped punk is burned (unwrapped)
             const unwrap = createUnwrap(fromAccount, toAccount, punk, log)
-            contract.totalSupply -= BIGINT_ONE
+            contract.totalSupply--
             ctx.esm.save(unwrap)
             ctx.esm.save(contract)
         } else {
@@ -108,7 +108,7 @@ mapping.handlers.handleTransfer = (ctx, log, event) => {
 
             updateAccountHoldings(toAccount, fromAccount)
             punk.owner = toAccount
-            punk.numberOfTransfers = punk.numberOfTransfers + BIGINT_ONE
+            punk.numberOfTransfers++
 
             //Write
             ctx.esm.save(fromAccount)

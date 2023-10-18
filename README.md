@@ -1011,3 +1011,56 @@ query MyQuery {
   }
 }
 ```
+
+### EpnsNotificationCounters
+
+squid
+
+```graphql
+query MyQuery {
+  epnsNotificationCounters {
+    id
+    totalCount
+  }
+}
+```
+
+subgraph
+
+```graphql
+query MyQuery {
+  epnsNotificationCounters {
+    id
+    totalCount
+  }
+}
+
+```
+
+### EpnsNotifications
+
+squid
+
+```graphql
+query MyQuery {
+  epnsPushNotifications(limit: 50, orderBy: id_ASC) {
+    id
+    notification
+    notificationNumber
+    recipient
+  }
+}
+```
+
+subgraph
+
+```graphql
+query MyQuery {
+  epnsPushNotifications(first: 50, orderBy: id, orderDirection: asc) {
+    id
+    notification
+    notificationNumber
+    recipient
+  }
+}
+```

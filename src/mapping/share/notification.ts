@@ -6,17 +6,12 @@ import {
 } from '../../model'
 import {CtxWithCache, Log} from '../../processor'
 import {instantiate} from '../../utils'
-import {
-    BIGINT_ONE,
-    BIGINT_ZERO,
-    SUBGRAPH_ADDRESS,
-    SUBGRAPH_ID,
-} from './constants'
+import {SUBGRAPH_ADDRESS, SUBGRAPH_ID} from './constants'
 
 function instantiateEpnsNotificationCounter(id: string) {
     return instantiate(EpnsNotificationCounter, {
         id,
-        totalCount: BIGINT_ZERO,
+        totalCount: 0n,
     })
 }
 
@@ -31,10 +26,10 @@ function sendEpnsNotification(
         if (!epnsNotificationCounter) {
             epnsNotificationCounter = instantiate(EpnsNotificationCounter, {
                 id: SUBGRAPH_ID,
-                totalCount: BIGINT_ZERO,
+                totalCount: 0n,
             })
         }
-        epnsNotificationCounter.totalCount += BIGINT_ONE
+        epnsNotificationCounter.totalCount++
         const id = `${SUBGRAPH_ID}+${epnsNotificationCounter.totalCount}`
         const epnsPushNotification = instantiate(EpnsPushNotification, {
             id,

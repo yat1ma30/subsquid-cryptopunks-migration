@@ -1,7 +1,5 @@
 import * as abi from '../abi/cryptopunks'
 import {
-    BIGINT_ONE,
-    BIGINT_ZERO,
     MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION,
     WRAPPED_PUNK_ADDRESS,
     ZERO_ADDRESS,
@@ -117,10 +115,10 @@ mapping.handlers.handleAssign = async (ctx, log, event) => {
                 traitType = new Trait({
                     id: trait.type,
                     type: TraitType.TYPE,
-                    numberOfNfts: BIGINT_ZERO,
+                    numberOfNfts: 0n,
                 })
             }
-            traitType.numberOfNfts = traitType.numberOfNfts + BIGINT_ONE
+            traitType.numberOfNfts++
             ctx.esm.save(traitType)
             ctx.esm.save(instantiateMetaDataTrait(metaData, traitType))
             trait.accessories.forEach((accessoryName) => {
@@ -130,18 +128,18 @@ mapping.handlers.handleAssign = async (ctx, log, event) => {
                     accessory = new Trait({
                         id: accessoryId,
                         type: TraitType.ACCESSORY,
-                        numberOfNfts: BIGINT_ZERO,
+                        numberOfNfts: 0n,
                     })
                 }
-                accessory.numberOfNfts = accessory.numberOfNfts + BIGINT_ONE
+                accessory.numberOfNfts++
                 ctx.esm.save(accessory)
                 ctx.esm.save(instantiateMetaDataTrait(metaData, accessory))
             })
         }
 
         //Update account punk holdings
-        toAccount.numberOfPunksOwned += BIGINT_ONE
-        toAccount.numberOfPunksAssigned += BIGINT_ONE
+        toAccount.numberOfPunksOwned++
+        toAccount.numberOfPunksAssigned++
         //Write
         ctx.esm.save(toAccount)
         ctx.esm.save(punk)
@@ -210,7 +208,7 @@ mapping.handlers.handlePunkTransfer = (ctx, log, event) => {
                 )
                 return
             }
-            punk.numberOfTransfers += BIGINT_ONE
+            punk.numberOfTransfers++
 
             let transfer = transferDeferred.get()
             if (!transfer) {
@@ -229,8 +227,8 @@ mapping.handlers.handlePunkTransfer = (ctx, log, event) => {
             }
 
             updateAccountHoldings(toAccount, fromAccount)
-            toAccount.numberOfTransfers += BIGINT_ONE
-            fromAccount.numberOfTransfers += BIGINT_ONE
+            toAccount.numberOfTransfers++
+            fromAccount.numberOfTransfers++
 
             //Capture punk transfers and owners if not transfered to WRAPPED PUNK ADDRESS
             punk.owner = toAccount
@@ -646,9 +644,8 @@ mapping.handlers.handlePunkNoLongerForSale = async (ctx, log, event) => {
         ask.from = punk.owner
         //Amount is 0 because this field is non-nullable & this basically initializes the field so it doesn't fail.
         //Also, this event doesn't emit the amount.
-        ask.amount = BIGINT_ZERO
-
-        askRemoved.amount = BIGINT_ZERO
+        ask.amount = 0n
+        askRemoved.amount = 0n
         askRemoved.ask = ask
 
         ctx.esm.saveForId(ask, ['removed', 'nft'])

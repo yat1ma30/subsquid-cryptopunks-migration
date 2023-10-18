@@ -1,4 +1,4 @@
-import {BIGINT_ONE, BIGINT_ZERO, CONTRACT_URI, TOKEN_URI} from './constants'
+import {CONTRACT_URI, TOKEN_URI} from './constants'
 import {
     Account,
     Ask,
@@ -28,14 +28,14 @@ export function instantiateAccount(address: string): Account {
     const url = `https://cryptopunks.app/cryptopunks/accountinfo?account=${address}`
     return instantiate(Account, {
         id: address,
-        numberOfPunksOwned: BIGINT_ZERO,
-        numberOfSales: BIGINT_ZERO,
-        totalEarned: BIGINT_ZERO,
-        numberOfTransfers: BIGINT_ZERO,
-        numberOfPunksAssigned: BIGINT_ZERO,
-        numberOfPurchases: BIGINT_ZERO,
-        totalSpent: BIGINT_ZERO,
-        averageAmountSpent: BIGINT_ZERO,
+        numberOfPunksOwned: 0n,
+        numberOfSales: 0n,
+        totalEarned: 0n,
+        numberOfTransfers: 0n,
+        numberOfPunksAssigned: 0n,
+        numberOfPurchases: 0n,
+        totalSpent: 0n,
+        averageAmountSpent: 0n,
         accountUrl: url,
     })
 }
@@ -71,10 +71,10 @@ export function instantiatePunk(
         wrapped: false,
         tokenId: tokenId,
         owner: owner,
-        numberOfTransfers: BIGINT_ZERO,
-        numberOfSales: BIGINT_ZERO,
-        totalAmountSpentOnPunk: BIGINT_ZERO,
-        averageSalePrice: BIGINT_ZERO,
+        numberOfTransfers: 0n,
+        numberOfSales: 0n,
+        totalAmountSpentOnPunk: 0n,
+        averageSalePrice: 0n,
         contract,
     })
     return punk
@@ -82,11 +82,11 @@ export function instantiatePunk(
 
 export function updatePunkSaleAggregates(punk: Punk, price: bigint): void {
     //Update punk aggregates
-    punk.totalAmountSpentOnPunk = punk.totalAmountSpentOnPunk + price
-    punk.numberOfSales = punk.numberOfSales + BIGINT_ONE
+    punk.totalAmountSpentOnPunk += price
+    punk.numberOfSales++
 
     //We only calculate average sale price if there are more than 0 sales so we don't divide by 0
-    if (punk.numberOfSales != BIGINT_ZERO) {
+    if (punk.numberOfSales != 0n) {
         punk.averageSalePrice = punk.totalAmountSpentOnPunk / punk.numberOfSales
     }
 }
@@ -99,7 +99,7 @@ export function updatePunkOwner(punk: Punk, toAccount: Account): void {
 
 export function updateContractAggregates(contract: Contract, price: bigint) {
     //Update contract aggregates
-    contract.totalSales = contract.totalSales + BIGINT_ONE
+    contract.totalSales++
     contract.totalAmountTraded = contract.totalAmountTraded + price
 }
 
@@ -206,7 +206,7 @@ export function instantiateAsk(fromAccount: Account, log: Log): Ask {
         from: fromAccount,
         offerType: OfferType.ASK,
         open: true,
-        amount: BIGINT_ZERO,
+        amount: 0n,
     })
 }
 
@@ -237,7 +237,7 @@ export function instantiateBid(fromAccount: Account, log: Log): Bid {
         id: bidId,
         offerType: OfferType.BID,
         open: true,
-        amount: BIGINT_ZERO,
+        amount: 0n,
         from: fromAccount,
     })
 }
@@ -350,15 +350,15 @@ export function updateAccountAggregates(
     price: bigint,
 ): void {
     //Update fromAccount aggregates
-    fromAccount.numberOfSales = fromAccount.numberOfSales + BIGINT_ONE
-    fromAccount.totalEarned = fromAccount.totalEarned + price
+    fromAccount.numberOfSales++
+    fromAccount.totalEarned += price
 
     //Update toAccount aggregates
     toAccount.totalSpent = toAccount.totalSpent + price
-    toAccount.numberOfPurchases = toAccount.numberOfPurchases + BIGINT_ONE
+    toAccount.numberOfPurchases++
 
     //We only calculate average amount spent if there are more than 0 purchases so we don't divide by 0
-    if (toAccount.numberOfPurchases != BIGINT_ZERO) {
+    if (toAccount.numberOfPurchases != 0n) {
         toAccount.averageAmountSpent =
             toAccount.totalSpent / toAccount.numberOfPurchases
     }
@@ -369,10 +369,10 @@ export function updateAccountHoldings(
     fromAccount: Account,
 ): void {
     //Update toAccount holdings
-    toAccount.numberOfPunksOwned += BIGINT_ONE
+    toAccount.numberOfPunksOwned++
 
     //Update fromAccount holdings
-    fromAccount.numberOfPunksOwned -= BIGINT_ONE
+    fromAccount.numberOfPunksOwned--
 }
 
 export function getWrapId(log: Log): string {

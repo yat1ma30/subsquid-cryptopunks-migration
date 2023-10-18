@@ -14,5 +14,5 @@ export const CRYPTOPUNKS_DATA_ADDRESS =
 
 // for notifications...
 export const SUBGRAPH_ID = 'itsjerryokolo/cryptopunks'
-export const SUBGRAPH_ADDRESS = '0xbcb4ed1f05b8f017cf23e739552a6d81a014ee84'
+export const SUBGRAPH_ADDRESS = '0xbCb4ED1F05b8F017CF23E739552A6D81A014Ee84'
 export const MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION = 15205322

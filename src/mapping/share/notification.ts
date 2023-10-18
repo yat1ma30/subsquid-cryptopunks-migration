@@ -35,11 +35,11 @@ function sendEpnsNotification(
             })
         }
         epnsNotificationCounter.totalCount += BIGINT_ONE
-        const notificationId = `${SUBGRAPH_ID}+${epnsNotificationCounter.totalCount}`
+        const id = `${SUBGRAPH_ID}+${epnsNotificationCounter.totalCount}`
         const epnsPushNotification = instantiate(EpnsPushNotification, {
-            id: notificationId,
-            recipient: recipient,
-            notification: notification,
+            id,
+            recipient,
+            notification,
             notificationNumber: epnsNotificationCounter.totalCount,
         })
         ctx.esm.save(epnsPushNotification)

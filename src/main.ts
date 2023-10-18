@@ -29,22 +29,22 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 
     // processing queue
     ctx.log.debug('Processing queue...')
-    // load entities from DB first
-    await esm.load(ctx)
     // execute all queue tasks
-    await queue.executeAll()
-    // save entities to DB
-    await esm.flush(ctx, [
-        model.Trait,
-        model.Contract,
-        model.Account,
-        model.CToken,
-        model.UserProxy,
-        model.Punk,
-        model.MetaData,
-        model.MetaDataTrait,
-        model.Ask,
-        model.Bid,
-    ])
+    await queue.executeAll({
+        onStart: () => esm.load(ctx),
+        onEnd: () =>
+            esm.flush(ctx, [
+                model.Trait,
+                model.Contract,
+                model.Account,
+                model.CToken,
+                model.UserProxy,
+                model.Punk,
+                model.MetaData,
+                model.MetaDataTrait,
+                model.Ask,
+                model.Bid,
+            ]),
+    })
     ctx.log.debug('Done.')
 })

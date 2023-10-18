@@ -593,14 +593,14 @@ type UserProxy @entity {
     timestamp: BigInt!
 }
 
-# type EpnsNotificationCounter @entity {
-#     id: ID!
-#     totalCount: BigInt!
-# }
+type EpnsNotificationCounter @entity {
+    id: ID!
+    totalCount: BigInt!
+}
 
-# type EpnsPushNotification @entity {
-#     id: ID!
-#     notificationNumber: BigInt!
-#     recipient: String!
-#     notification: String!
-# }
+type EpnsPushNotification @entity {
+    id: ID!
+    notificationNumber: BigInt!
+    recipient: String!
+    notification: String!
+}

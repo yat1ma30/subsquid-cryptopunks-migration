@@ -2,6 +2,7 @@ import * as abi from '../abi/cryptopunks'
 import {
     BIGINT_ONE,
     BIGINT_ZERO,
+    MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION,
     WRAPPED_PUNK_ADDRESS,
     ZERO_ADDRESS,
 } from './share/constants'
@@ -39,6 +40,11 @@ import {Transfer} from '../model/generated/transfer.model'
 import {defaultPunkRelations} from './share/relations'
 import {createMapping} from './share/mapper'
 import {fetchCryptoPunkContract} from './share/contracts'
+import {
+    handleAskNotification,
+    handleBidNotification,
+    handleSaleNotification,
+} from './share/notification'
 
 const mapping = createMapping(abi, '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB')
 
@@ -355,6 +361,10 @@ mapping.handlers.handlePunkOffered = (ctx, log, event) => {
         ctx.esm.save(askCreated)
         ctx.esm.save(ask)
         ctx.esm.save(punk)
+
+        if (log.block.height > MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION) {
+            handleAskNotification(ctx, punk, punk.owner, event.minValue, log)
+        }
     })
 }
 
@@ -410,6 +420,10 @@ mapping.handlers.handlePunkBidEntered = (ctx, log, event) => {
         ctx.esm.save(bidCreated)
         ctx.esm.save(bid)
         ctx.esm.save(punk)
+
+        if (log.block.height > MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION) {
+            handleBidNotification(ctx, punk, fromAccount, event.value, log)
+        }
     })
 }
 mapping.handlers.handlePunkBidWithdrawn = (ctx, log, event) => {
@@ -548,6 +562,17 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
                 updateAccountAggregates(fromAccount, toAccount, oldBid.amount)
                 updatePunkSaleAggregates(punk, oldBid.amount)
                 updateContractAggregates(contract, oldBid.amount)
+                if (
+                    log.block.height > MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION
+                ) {
+                    handleSaleNotification(
+                        ctx,
+                        punk,
+                        toAccount,
+                        oldBid.amount,
+                        log,
+                    )
+                }
             } else {
                 ctx.log.debug('no current bid')
             }
@@ -564,6 +589,9 @@ mapping.handlers.handlePunkBought = (ctx, log, event) => {
             updateContractAggregates(contract, event.value)
             updateAccountHoldings(toAccount, fromAccount)
             updateAccountAggregates(fromAccount, toAccount, event.value)
+            if (log.block.height > MINIMUM_BLOCK_HEIGHT_TO_SEND_NOTIFICATION) {
+                handleSaleNotification(ctx, punk, toAccount, event.value, log)
+            }
         }
 
         //Write

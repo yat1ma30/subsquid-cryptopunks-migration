@@ -125,8 +125,6 @@ export class Mapper {
     async processLog(ctx: CtxWithCache, log: Log) {
         const address = log.address.toLowerCase()
         const mapping = this.abiMappingsWithAddr[address]
-        if (!mapping) return
-
         const handler =
             mapping?.topicHandlers[log.topics[0]] ||
             this.otherABIHandlers[log.topics[0]]

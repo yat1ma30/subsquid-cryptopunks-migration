@@ -1,71 +1,110 @@
 import * as cryptoPunksDataAbi from '../../abi/CryptoPunksData'
-import {ChainContext} from '../../abi/abi.support'
 import {Contract as ContractModel, MetaData} from '../../model'
-import {Block, CtxWithCache, Log} from '../../processor'
+import {CtxWithCache, ProcessorContext} from '../../processor'
 import {CRYPTOPUNKS_DATA_ADDRESS, MULTICALL_ADDRESS} from './constants'
 import * as abiCryptoPunks from '../../abi/cryptopunks'
 import * as abiWrappedPunks from '../../abi/wrappedpunks'
-import * as abiCryptoPunksData from '../../abi/CryptoPunksData'
-import {callOnce, chunkArray, instantiate} from '../../utils'
+import {chunkArray, instantiate} from '../../utils'
 import {ParallelRpcCaller} from './parallelRpcCaller'
-import {IsNull} from 'typeorm'
+import {IsNull, Not} from 'typeorm'
+import {Store} from '@subsquid/typeorm-store'
+import {Block} from '../../abi/abi.support'
 
-const fetchAndSavePunkImages = async (ctx: CtxWithCache, log: Log) => {
+export const deleteAllImages = async (ctx: ProcessorContext<Store>) => {
+    const es = await ctx.store.find(MetaData, {
+        where: [{image: Not(IsNull())}, {svg: Not(IsNull())}],
+    })
+    ctx.log.info(`Deleting ${es.length} images.`)
+    es.forEach((e) => {
+        e.image = null
+        e.svg = null
+    })
+    await ctx.store.upsert(es)
+}
+
+export const fetchAndSavePunkImages = async (
+    ctx: ProcessorContext<Store>,
+    block: Block,
+): Promise<boolean> => {
     ctx.log.info(
         `[CryptoPunksData] Fetching and saving punk images with multiple MultiCall.`,
     )
     const caller = new ParallelRpcCaller(MULTICALL_ADDRESS)
+    const chunkSize = 2000
     const [entitiesToFetchImages, entitiesToFetchSvgs] = await Promise.all([
         ctx.store.find(MetaData, {
             where: {image: IsNull()},
+            take: chunkSize,
+            order: {tokenId: 'ASC'},
         }),
         ctx.store.find(MetaData, {
             where: {svg: IsNull()},
+            take: chunkSize,
+            order: {tokenId: 'ASC'},
         }),
     ])
-    const idsToFetchImages = entitiesToFetchImages.map((e) => e.tokenId)
-    const idsToFetchSvgs = entitiesToFetchSvgs.map((e) => e.tokenId)
-
-    ctx.log.info(
-        `[CryptoPunksData] Fetching ${idsToFetchImages.length} images.`,
-    )
-    const images = await caller.batchCall(
-        ctx.log,
-        log.block,
-        CRYPTOPUNKS_DATA_ADDRESS,
-        cryptoPunksDataAbi.functions.punkImage,
-        idsToFetchImages.map((i) => [i]),
-        2,
-    )
-    // save results
-    entitiesToFetchImages.forEach((e, i) => {
-        e.image = images[i]
-    })
-    for (const chunk of chunkArray(entitiesToFetchImages, 100)) {
-        await ctx.store.upsert(chunk)
+    {
+        // fetch images
+        const idsToFetchImages = entitiesToFetchImages.map((e) => e.tokenId)
+        if (idsToFetchImages.length > 0) {
+            ctx.log.info(
+                `[CryptoPunksData] Fetching ${
+                    idsToFetchImages.length
+                } images from ${idsToFetchImages[0]} to ${
+                    idsToFetchImages[idsToFetchImages.length - 1]
+                }`,
+            )
+            const images = await caller.batchCall(
+                ctx.log,
+                block,
+                CRYPTOPUNKS_DATA_ADDRESS,
+                cryptoPunksDataAbi.functions.punkImage,
+                idsToFetchImages.map((i) => [i]),
+                2,
+            )
+            // save results
+            entitiesToFetchImages.forEach((e, i) => {
+                e.image = images[i]
+            })
+            for (const chunk of chunkArray(entitiesToFetchImages, 100)) {
+                await ctx.store.upsert(chunk)
+            }
+            ctx.log.info(`Saved ${images.length} images.`)
+            return false
+        }
     }
-    ctx.log.info(`Saved ${images.length} images.`)
-    ctx.log.info(`[CryptoPunksData] Fetching ${idsToFetchSvgs.length} svgs.`)
-    const svgs = await caller.batchCall(
-        ctx.log,
-        log.block,
-        CRYPTOPUNKS_DATA_ADDRESS,
-        cryptoPunksDataAbi.functions.punkImageSvg,
-        idsToFetchSvgs.map((i) => [i]),
-        1,
-    )
-
-    // save results
-    entitiesToFetchSvgs.forEach((e, i) => {
-        e.svg = svgs[i]
-    })
-    for (const chunk of chunkArray(entitiesToFetchSvgs, 100)) {
-        await ctx.store.upsert(chunk)
+    {
+        // fetch svgs
+        const idsToFetchSvgs = entitiesToFetchSvgs.map((e) => e.tokenId)
+        if (idsToFetchSvgs.length > 0) {
+            ctx.log.info(
+                `[CryptoPunksData] Fetching ${
+                    idsToFetchSvgs.length
+                } svgs from ${idsToFetchSvgs[0]} to ${
+                    idsToFetchSvgs[idsToFetchSvgs.length - 1]
+                }`,
+            )
+            const svgs = await caller.batchCall(
+                ctx.log,
+                block,
+                CRYPTOPUNKS_DATA_ADDRESS,
+                cryptoPunksDataAbi.functions.punkImageSvg,
+                idsToFetchSvgs.map((i) => [i]),
+                1,
+            )
+            // save results
+            entitiesToFetchSvgs.forEach((e, i) => {
+                e.svg = svgs[i]
+            })
+            for (const chunk of chunkArray(entitiesToFetchSvgs, 100)) {
+                await ctx.store.upsert(chunk)
+            }
+            ctx.log.info(`Saved ${svgs.length} svgs.`)
+            return false
+        }
     }
-    ctx.log.info(`Saved ${svgs.length} svgs.`)
+    return true
 }
-
-export const fetchAndSavePunkImagesOnce = callOnce(fetchAndSavePunkImages)
 
 export async function fetchCryptoPunkContract(
     ctx: CtxWithCache,
@@ -109,38 +148,4 @@ export async function fetchWrappedPunkContract(
         totalSupply,
     })
     return contract
-}
-
-export async function fetchPunkImages(
-    ctx: ChainContext,
-    block: Block,
-    address: string,
-    punkNo: number,
-) {
-    const client = new abiCryptoPunksData.Contract(ctx, block, address)
-    const image = await client.punkImage(punkNo)
-    const imageSvg = await client.punkImageSvg(punkNo)
-    return {image, imageSvg}
-}
-
-// do not use this func after implementing BatchCaller class
-export async function fetchBatchedPunkImages(
-    ctx: CtxWithCache,
-    block: Block,
-    address: string,
-    punkNos: number[],
-    batchSize: number,
-): Promise<any[]> {
-    const batchedPunkNos = []
-    for (let i = 0; i < punkNos.length; i += batchSize) {
-        batchedPunkNos.push(punkNos.slice(i, i + batchSize))
-    }
-    const results = []
-    for (const batch of batchedPunkNos) {
-        const batchResults = await Promise.all(
-            batch.map((punkNo) => fetchPunkImages(ctx, block, address, punkNo)),
-        )
-        results.push(...batchResults)
-    }
-    return results
 }

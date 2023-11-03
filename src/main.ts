@@ -6,8 +6,14 @@ import {
     CtxWithCache,
 } from './processor'
 import * as model from './model'
-import {fetchAndSavePunkImagesOnce} from './mapping/share/contracts'
+import {fetchAndSavePunkImages} from './mapping/share/contracts'
 import {TransferRecorder, EntitySyncManager, SimpleQueue} from './context'
+
+const state = {
+    // flags for checking if all images are downloaded
+    hasSavedAllImages: false,
+    lastBlock: {height: 0},
+}
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     // making queue
@@ -18,15 +24,10 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     for (const block of ctx.blocks) {
         for (const log of block.logs) {
             const c: CtxWithCache = {...ctx, queue, esm, transferRecorder}
-            if (block.header.height > BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES) {
-                // to fetch images for metadata
-                await fetchAndSavePunkImagesOnce(c, log)
-            }
-            // decode event data and enqueue tasks
             await mapper.processLog(c, log)
         }
+        state.lastBlock = block.header
     }
-
     // processing queue
     ctx.log.debug('Processing queue...')
     // execute all queue tasks
@@ -46,5 +47,15 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
                 model.Bid,
             ]),
     })
+    // fetch metadata images if needed
+    if (
+        state.lastBlock.height > BLOCK_HEIGHT_TO_FETCH_PUNK_IMAGES &&
+        !state.hasSavedAllImages
+    ) {
+        state.hasSavedAllImages = await fetchAndSavePunkImages(
+            ctx,
+            state.lastBlock,
+        )
+    }
     ctx.log.debug('Done.')
 })

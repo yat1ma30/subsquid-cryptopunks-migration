@@ -12,12 +12,11 @@ export function uint256ToHex(id: bigint) {
     return '0x' + bigintToHex(id).toLowerCase().slice(2).padStart(64, '0')
 }
 
-export function uint8ToHex(array: Uint8Array): string {
-    return (
-        '0x' +
-        [...array].map((byte) => byte.toString(16).padStart(2, '0')).join('')
-    )
+export function uint8ArrayToHex(array: Uint8Array): string {
+    const buffer = Buffer.from(array)
+    return `0x${buffer.toString('hex')}`.toLowerCase()
 }
+
 export function hexToByteArray(hexString: string) {
     if (hexString.startsWith('0x')) {
         hexString = hexString.slice(2) // remove prefix

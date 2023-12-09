@@ -4,12 +4,6 @@ This is a squid submitted by @yat1ma30 for the [CryptoPunks Subgraph migration](
 
 ## Usage
 
-### Playground
-
-https://squid.subsquid.io/yat1ma30-cryptopunks/v/v1/graphql
-
-### Run locally
-
 ```bash
 git clone <repo_url>
 cd <repo_url>
@@ -19,15 +13,7 @@ sqd process &
 sqd serve
 ```
 
-## Refactoring for ease of use
-
-I began to know TypeScript's types and extracting types from ABIs are useful (just a noob comment passed by).
-
-![alt text](docs/images/meow.gif)
-
-## Test Queries
-
-I've tested them all with JSON diff tools  already.
+## Queries
 
 ### CTokens
 
